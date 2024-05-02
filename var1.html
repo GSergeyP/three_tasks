@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>Try To Hack My JavaScript: document.readyState</title>
+		<style>
+			html,
+			body {
+				margin: 0px;
+				padding: 0px;
+				height: 100%;
+				overflow: hidden;
+			}
+
+			.countDown {
+				width: 100%;
+				height: 100%;
+				display: block;
+
+			}
+
+			.countDown__text {
+				text-align: center;
+				font-size: 10vw;
+				line-height: 100vh;
+			}
+
+			.countDown__text_inform {
+				color: black;
+			}
+
+
+			.countDown__text_boom {
+				color: red;
+			}
+
+			.countDown__text_ok {
+				color: green;
+			}
+		</style>
+
+
+	</head>
+
+	<body>
+		<div class="countDown">
+			<span class="countDown countDown__text countDown__text_inform"></span>
+		</div>
+
+		<script>
+			var clickingLink = (
+				() => ( 
+					location.hash = btoa( document.location.href.substring( 1 ) )
+				)
+			);
+
+			(
+				() => {
+					var doGetHtmlElement = (
+						( theSelector ) => (
+							document.querySelector( theSelector )
+						)
+					);
+
+					var typeSetClassToHtmlElement = (
+						( theHtmlElement ) => (
+							( theClassName ) => (
+								theHtmlElement.classList.add( theClassName )
+							)
+						)
+					);
+
+					var typeSetInnerTextToHtmlElement = (
+						( theHtmlElement ) => (
+							( theText ) => (
+								theHtmlElement.innerText = theText
+							)
+						)
+					);
+
+					var typeSetTextSetClassToHtmlElementBySelector = (
+						( theHtmlSelector ) => {
+							var theHtmlElement = doGetHtmlElement( theHtmlSelector );
+							var doSetClass = typeSetClassToHtmlElement( theHtmlElement );
+							var doSetText = typeSetInnerTextToHtmlElement( theHtmlElement );
+							return (
+								( theClassName ) => (
+									( theText ) => (
+										doSetClass( theClassName )
+										, doSetText( theText )
+									)
+								)
+							);
+						}
+					);
+
+
+					var theCSSClassAboutInform = 'countDown__text_inform';
+
+					var theTextAboutBadaBoom = "Fail";
+					var theCSSClassAboutBadaBoom = "countDown__text_boom";
+
+					var theTextAboutDeactivation = "You did it";
+					var theCSSClassAboutDeactivation = "countDown__text_ok";
+
+					var theNumberUntilTheBadaBoom = 5;
+					var theTimeInterval = 1000;
+
+					var theCSSSelectorWhereWeWillInform = ".countDown__text";
+					var theTestingStage = "complete";
+
+
+					var typeSetTextSetClassToHtmlElement = typeSetTextSetClassToHtmlElementBySelector( theCSSSelectorWhereWeWillInform );
+
+					var doSetBlackText = typeSetTextSetClassToHtmlElement( theCSSClassAboutInform );
+					var doSetGreenText = typeSetTextSetClassToHtmlElement( theCSSClassAboutDeactivation );
+					var doSetRedText = typeSetTextSetClassToHtmlElement( theCSSClassAboutBadaBoom );
+
+         
+					var typeTestReadyState = (
+						( theStage ) => (
+							( theState ) => (
+								theState === theStage
+							)
+						)
+					);
+         
+					var doCheckOfDocumentState = typeTestReadyState( theTestingStage );
+
+					var doCheck = (
+						() => (
+							doSetBlackText( theNumberUntilTheBadaBoom-- )
+							|| (
+								(
+									doCheckOfDocumentState( document.readyState )
+										? (doSetGreenText( theTextAboutDeactivation ), clickingLink())
+										: doSetRedText( theTextAboutBadaBoom )	
+								)
+								, false
+							)
+						)
+					);
+
+					(
+						( theTimeInterval ) => (
+							( doContinueCondition ) => {
+								var theInterval = (
+									setInterval(
+										() => (
+											doContinueCondition() || clearInterval( theInterval )
+										)
+										, theTimeInterval
+									)
+								);
+								return theInterval;
+							}
+						)
+					)( theTimeInterval )( doCheck );
+
+				}
+			)();
+
+		</script>
+	</body>
+
+</html>

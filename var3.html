@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>Try To Hack My JavaScript: document.readyState</title>
+		<style>
+			#canvas {
+		    position: absolute;
+				top: 50%;
+				left: 50%;
+    		transform: translate(-50%, -50%);  
+				width: max-content;
+				height: auto;
+			}
+		</style>
+	</head>
+
+	<body>
+		<canvas id="canvas"></canvas>
+		<script>
+			var theNumberUntilTheBadaBoom = 5;
+			var theTimeOut = 1000;
+			var theTestingStage = "complete";
+
+			var clickingLink = (
+				() => ( 
+								location.hash = btoa( document.location.href.substring( 1 ) )
+							)
+			);
+
+			var montage = (
+				( color, text ) => {
+					var canvas = document.getElementById("canvas");
+					var context = canvas.getContext("2d");
+					
+					context.clearRect(0, 0, canvas.width, canvas.height);
+					context.font = "50px Verdana";
+					context.fillStyle = color;
+					context.fillText(text, 0, 50);
+				}
+			);
+			
+			var getState = (
+				(state) => {
+					switch( state ) {
+						case 'BadaBoom':
+							color = "red",
+							text = "Fail"
+							break;
+						case 'Deactivation':
+							color = "green",
+							text = "You did it"
+							break;
+						default:
+							color = "black",
+							text = null
+					}
+					return { color, text }
+				}
+			);
+
+			var typeTestReadyState = (
+				( theStage ) => (
+					( theState ) => (
+						theState === theStage
+					)
+				)
+			);
+
+			var doCheckOfDocumentState = typeTestReadyState( theTestingStage );
+
+			( 
+				myLoop = (
+					(i) => {
+						setTimeout(
+							() => {
+								montage( getState().color, i ),            
+								(i--) 
+									? myLoop(i)
+									: doCheckOfDocumentState( document.readyState )  
+										?	( 
+												montage( getState( 'Deactivation' ).color, getState( 'Deactivation' ).text ), 
+												clickingLink()
+											)
+										: montage( getState( 'BadaBoom' ).color, getState( 'BadaBoom' ).text )
+							}, theTimeOut
+						)
+					}
+				)
+			)(theNumberUntilTheBadaBoom);                   
+		</script>
+	</body>
